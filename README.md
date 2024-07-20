@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @dArK-0p
-- 👀 I’m interested in competative coding
-- 🌱 I’m currently learning c++
+- 👀 I’m interested in competative coding and java developement.
+- 🌱 I’m currently learning c++ and java.
 - 💞️ I’m looking to collaborate on ...
 - 📫 How to reach me: e-mail: samsagume@gmail.com
 
