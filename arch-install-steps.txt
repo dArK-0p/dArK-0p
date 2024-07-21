@@ -1,0 +1,97 @@
+# Connect to a wireless network
+iwctl
+device list
+station wlan0 scan
+station wlan0 get-networks
+station wlan0 connect <SSID>
+
+# Synchronising clock
+timedatectl set-ntp true
+timedatectl list-timezones
+timedatectl set-timezone "Asia/Calcutta"
+
+# Partioning the SSD | * -> Swap partition not recommended for nvme
+fdisk -l
+cfdisk /dev/nvme0n1
+	EFI  - 001G		EFI Boot Partition.
+	ROOT - 507G		Linux File system.
+	SWAP - 004G		Linux SWAP.
+
+# Creating file systems.
+mkfs.fat -F32 /dev/nvme0n1p1
+mkfs.ext4 /dev/nvme0p2
+mkswap /dev/nvme0p3
+
+# Mount and Swap setup
+mount /dev/nvme0n1p2 /mnt
+swapon /dev/nvme0n1p3
+
+# Updating mirrorlist and local repo index 
+reflector --verbose --country 'India' -l 5 --sort rate --save /etc/pacman.d/mirrorlist
+pacman -Sy
+
+# kernel and firmware installation
+pacstrap /mnt base base-devel linux linux-firmware sudo nano ntfs-3g networkmanager 
+
+# Generating fstab file for mount points.
+genfstab -U /mnt >> /mnt/etc/fstab
+
+# Login into the chroot host system.
+arch-chroot /mnt
+
+# Setting up Locale
+ls /usr/share/zoneinfo
+ln -sf /usr/share/zoneinfo/Asia/Calcutta /etc/localtime
+nano /etc/locale.gen  uncomment en_US.UTF-8 UTF-8
+locale-gen
+
+# Setting up network
+nano /etc/hosts
+	127.0.0.1        localhost
+	::1              localhost
+	127.0.1.1        Aarchlinux
+pacman -S networkmanager
+systemctl enable NetworkManager
+
+# Configuring users, passwords and permissions.
+passwd rootuser117
+useradd -m -G wheel darkop
+passwd darkop mcpojohn117
+nano /etc/sudoers uncomment %wheel ALL=(ALL) ALL
+
+# Grub and efi setup
+pacman -S amd-ucode grub efibootmgr
+mkdir /boot/efi
+mount /dev/nvme0n1p1 /boot/efi
+grub-install --target=x86_64-efi --bootloader-id=AaRcH
+grub-mkconfig -o /boot/grub/grub.cfg
+
+# Generating custom_apps.lst 
+xorg
+htop
+curl
+rsync
+speedtest-cli
+net-tools
+openssh
+tree
+unzip
+unrar
+p7zip
+whois
+wget
+libreoffice-fresh
+
+# Exit chroot and Reboot into Arch
+exit
+umount -R /mnt
+reboot
+
+# Hyprdots by prasanthragan management tool.
+pacman -Syu git
+git clone https://aur.archlinux.org/hyde-cli-git.git
+cd ./hyde-cli
+makepkg -si
+
+# Installing Hyprdots using Hyde-CLI.
+Hyde-install
