@@ -54,10 +54,10 @@ pacman -S networkmanager
 systemctl enable NetworkManager
 
 # Configuring users, passwords and permissions.
-passwd rootuser117
-useradd -m -G wheel darkop
-passwd darkop mcpojohn117
-nano /etc/sudoers uncomment %wheel ALL=(ALL) ALL
+passwd <root-password>
+useradd -m -G wheel <non-root user name>
+passwd <non-root user name> <non-root user-password>
+nano /etc/sudoers -> Uncomment %wheel ALL=(ALL) ALL
 
 # Grub and efi setup
 pacman -S amd-ucode grub efibootmgr
@@ -66,13 +66,11 @@ mount /dev/nvme0n1p1 /boot/efi
 grub-install --target=x86_64-efi --bootloader-id=AaRcH
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Generating custom_apps.lst 
+# Recommended packages to install.
 xorg
 htop
 curl
-rsync
 speedtest-cli
-net-tools
 openssh
 tree
 unzip
