@@ -21,7 +21,7 @@ cfdisk /dev/nvme0n1
 mkfs.fat -F32 /dev/nvme0n1p1
 mkfs.ext4 /dev/nvme0p2
 mkswap /dev/nvme0p3
-
+q
 # Mount and Swap setup
 mount /dev/nvme0n1p2 /mnt
 swapon /dev/nvme0n1p3
